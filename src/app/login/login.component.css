@@ -1,0 +1,134 @@
+/* ================= LOGIN PAGE ================= */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 13px 15px;
+  margin: 12px 0;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.login-box input::placeholder {
+  color: #95a5a6;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.login-box button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.login-box button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  padding: 10px;
+  background: #fadbd8;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.register-text {
+  text-align: center;
+  margin-top: 20px;
+  color: #7f8c8d;
+}
+
+.register-text a {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-box button {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-box button:hover {
+  transform: scale(1.05);
+}
+
+/* Error */
+.error {
+  color: #ff6b6b;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Register text */
+.register-text {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.register-text a {
+  color: #ffd369;
+  text-decoration: none;
+  font-weight: bold;
+}

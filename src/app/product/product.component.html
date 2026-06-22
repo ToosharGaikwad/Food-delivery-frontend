@@ -1,0 +1,144 @@
+<div class="product-page">
+  <!-- Header -->
+  <div class="products-header">
+    <div>
+      <h2>🍽️ Available Products</h2>
+      <p style="color: rgba(255, 255, 255, 0.9); margin: 0">
+        Select items and build your order
+      </p>
+    </div>
+    <button class="cart-toggle" (click)="showCart = !showCart">
+      🛒 Cart ({{ cart.length }})
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <p>⏳ Loading products...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <p>❌ {{ error }}</p>
+    <button (click)="loadProducts()">🔄 Retry</button>
+  </div>
+
+  <!-- Products Grid -->
+  <div *ngIf="!showCart && !loading && !error">
+    <div *ngIf="products.length === 0" class="no-products">
+      <p>📭 No products available at this restaurant.</p>
+      <button (click)="loadProducts()">🔄 Refresh</button>
+    </div>
+    <div *ngIf="products.length > 0" class="product-container">
+      <div *ngFor="let product of products" class="product-card">
+        <div class="product-image">🥘</div>
+
+        <div class="product-details">
+          <h3>{{ product.name }}</h3>
+
+          <span class="product-category">{{ product.category }}</span>
+
+          <p class="product-price">₹{{ product.price }}</p>
+
+          <div
+            *ngIf="product.available; else notAvail"
+            class="availability available"
+          >
+            ✅ Available
+          </div>
+          <ng-template #notAvail>
+            <div class="availability not-available">❌ Out of Stock</div>
+          </ng-template>
+
+          <div class="product-action">
+            <button
+              (click)="addToCart(product)"
+              [disabled]="!product.available"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart -->
+  <div *ngIf="showCart" class="cart-section">
+    <div class="cart-header">
+      <h3>🛒 Shopping Cart</h3>
+      <span style="font-size: 0.9rem">{{ cart.length }} items</span>
+    </div>
+
+    <div *ngIf="cart.length === 0" class="empty-cart">
+      <p style="font-size: 2rem; margin-bottom: 10px">📦</p>
+      <p>Your cart is empty. Add items to continue!</p>
+    </div>
+
+    <div *ngIf="cart.length > 0">
+      <div class="cart-items">
+        <div *ngFor="let item of cart" class="cart-item">
+          <div class="cart-item-info">
+            <h4>{{ item.name }}</h4>
+            <p class="cart-item-price">₹{{ item.price }} each</p>
+          </div>
+
+          <div class="quantity-control">
+            <button class="qty-decrease" (click)="decreaseQuantity(item.id)">
+              −
+            </button>
+            <span class="quantity-display">{{ item.quantity }}</span>
+            <button class="qty-increase" (click)="increaseQuantity(item.id)">
+              +
+            </button>
+          </div>
+
+          <div class="item-total">₹{{ item.price * item.quantity }}</div>
+
+          <button class="remove-btn" (click)="removeFromCart(item.id)">
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>₹{{ getTotalPrice() }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery Fee:</span>
+          <span>₹50</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span>₹{{ (getTotalPrice() * 0.05).toFixed(2) }}</span>
+        </div>
+
+        <div class="total-amount">
+          Total: ₹{{
+            (getTotalPrice() + 50 + getTotalPrice() * 0.05).toFixed(2)
+          }}
+        </div>
+
+        <button class="checkout-btn" (click)="checkout()">
+          ✅ Proceed to Checkout
+        </button>
+
+        <div *ngIf="showCart" class="cart-section">
+          <!-- ✅ Receipt button always visible -->
+          <button
+            class="receipt-btn"
+            [disabled]="!latestOrderId"
+            (click)="downloadReceipt(latestOrderId)"
+          >
+            📄 Download Receipt
+          </button>
+
+          <!-- cart items -->
+          <div *ngIf="cart.length > 0">...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,444 @@
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <h2>👨‍💼 Admin Dashboard</h2>
+    <p>Manage products, view orders, and handle restaurants</p>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="admin-nav">
+    <button
+      (click)="section = 'products'"
+      [class.active]="section === 'products'"
+    >
+      📦 Manage Products
+    </button>
+    <button (click)="section = 'orders'" [class.active]="section === 'orders'">
+      📋 View Orders
+    </button>
+    <button
+      (click)="section = 'restaurants'"
+      [class.active]="section === 'restaurants'"
+    >
+      🏪 Manage Restaurants
+    </button>
+  </div>
+
+  <!-- ================= PRODUCTS SECTION ================= -->
+  <div *ngIf="section === 'products'" class="admin-section">
+    <h3 class="section-title">📦 Product Management</h3>
+
+    <!-- Add Product Form -->
+    <div
+      style="
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+      "
+    >
+      <h4 style="margin-bottom: 20px; color: #2c3e50">Add New Product</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input
+            type="text"
+            placeholder="Enter product name"
+            [(ngModel)]="newProduct.name"
+          />
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input
+            type="number"
+            placeholder="Enter price"
+            [(ngModel)]="newProduct.price"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <input
+            type="text"
+            placeholder="e.g., Pizza, Burger, Biryani"
+            [(ngModel)]="newProduct.category"
+          />
+        </div>
+        <div class="form-group">
+          <label>Restaurant ID</label>
+          <input
+            type="number"
+            placeholder="Enter restaurant ID"
+            [(ngModel)]="newProduct.restaurantId"
+          />
+        </div>
+      </div>
+
+      <button
+        class="btn-add"
+        (click)="addProduct()"
+        style="width: 100%; padding: 13px"
+      >
+        ✅ Add Product
+      </button>
+    </div>
+
+    <!-- Products List -->
+    <h4 style="margin-bottom: 20px; color: #2c3e50">Product List</h4>
+
+    <!-- Edit Product Form -->
+    <div
+      *ngIf="editingProductId !== null"
+      style="
+        background: #fff3cd;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        border-left: 5px solid #ffc107;
+      "
+    >
+      <h4 style="margin-bottom: 20px; color: #856404">✏️ Edit Product</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input
+            type="text"
+            placeholder="Enter product name"
+            [(ngModel)]="editProduct.name"
+          />
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input
+            type="number"
+            placeholder="Enter price"
+            [(ngModel)]="editProduct.price"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <input
+            type="text"
+            placeholder="e.g., Pizza, Burger, Biryani"
+            [(ngModel)]="editProduct.category"
+          />
+        </div>
+        <div class="form-group">
+          <label>Restaurant ID</label>
+          <input
+            type="number"
+            placeholder="Enter restaurant ID"
+            [(ngModel)]="editProduct.restaurantId"
+          />
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px">
+        <button
+          class="btn-add"
+          (click)="updateProduct()"
+          style="flex: 1; padding: 13px"
+        >
+          💾 Save Changes
+        </button>
+        <button
+          class="btn-delete"
+          (click)="cancelEditProduct()"
+          style="flex: 1; padding: 13px"
+        >
+          ❌ Cancel
+        </button>
+      </div>
+    </div>
+
+    <div class="products-list">
+      <div *ngFor="let p of products" class="product-item">
+        <div>
+          <h4>{{ p.name }}</h4>
+          <p>Category: {{ p.category }}</p>
+        </div>
+        <div style="text-align: right">
+          <p style="font-weight: bold; color: #ff6b35">₹{{ p.price }}</p>
+          <div style="display: flex; gap: 8px; justify-content: flex-end">
+            <button
+              class="btn-add"
+              (click)="startEditProduct(p)"
+              style="padding: 8px 16px"
+            >
+              ✏️ Edit
+            </button>
+            <button class="btn-delete" (click)="deleteProduct(p.id)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="products.length === 0" class="empty-state">
+      <p>No products found</p>
+    </div>
+  </div>
+
+  <!-- ================= ORDERS SECTION ================= -->
+  <div *ngIf="section === 'orders'" class="admin-section">
+    <h3 class="section-title">📋 Order Management</h3>
+
+    <div class="orders-list">
+      <div *ngFor="let o of orders" class="order-item">
+        <div class="order-header">
+          <div class="order-detail">
+            <strong>Order ID</strong>
+            {{ o.orderId }}
+          </div>
+          <div class="order-detail">
+            <strong>Total Amount</strong>
+            ₹{{ o.totalAmount }}
+          </div>
+          <div class="order-detail">
+            <strong>User ID</strong>
+            {{ o.user?.id || "N/A" }}
+          </div>
+          <div class="order-detail">
+            <strong>Payment Mode</strong>
+            {{ o.paymentMode }}
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+          "
+        >
+          <div style="flex-grow: 1">
+            <strong style="color: #2c3e50; display: block; margin-bottom: 8px"
+              >Status:</strong
+            >
+            <span
+              class="status-badge"
+              [ngClass]="'status-' + (o.orderStatus | lowercase)"
+            >
+              {{ o.orderStatus }}
+            </span>
+          </div>
+
+          <div
+            class="status-update-section"
+            style="margin-top: 0; margin-left: auto"
+          >
+            <select [(ngModel)]="o.orderStatus">
+              <option value="PLACED">PLACED</option>
+              <option value="ACCEPTED">ACCEPTED</option>
+              <option value="PREPARING">PREPARING</option>
+              <option value="DELIVERED">DELIVERED</option>
+            </select>
+            <button
+              class="update-btn"
+              (click)="updateStatus(o.orderId, o.orderStatus)"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="orders.length === 0" class="empty-state">
+      <p>No orders found</p>
+    </div>
+  </div>
+
+  <!-- ================= RESTAURANTS SECTION ================= -->
+  <div *ngIf="section === 'restaurants'" class="admin-section">
+    <!-- Add Restaurant Form -->
+    <div
+      style="
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+      "
+    >
+      <h4 style="margin-bottom: 20px; color: #2c3e50">Add New Restaurant</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Restaurant Name</label>
+          <input
+            type="text"
+            placeholder="Enter restaurant name"
+            [(ngModel)]="newRestaurant.name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input
+            type="text"
+            placeholder="Enter address"
+            [(ngModel)]="newRestaurant.address"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rating</label>
+          <input
+            type="number"
+            placeholder="Enter rating"
+            [(ngModel)]="newRestaurant.rating"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+
+          <select [(ngModel)]="newRestaurant.isopen">
+            <option [ngValue]="true">Open</option>
+            <option [ngValue]="false">Closed</option>
+          </select>
+        </div>
+      </div>
+
+      <button
+        class="btn-add"
+        (click)="addRestaurant()"
+        style="width: 100%; padding: 13px"
+      >
+        ✅ Add Restaurant
+      </button>
+    </div>
+    <h3 class="section-title">🏪 Restaurant Management</h3>
+
+    <!-- Edit Restaurant Form -->
+    <div
+      *ngIf="editingRestaurantId !== null"
+      style="
+        background: #fff3cd;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        border-left: 5px solid #ffc107;
+      "
+    >
+      <h4 style="margin-bottom: 20px; color: #856404">✏️ Edit Restaurant</h4>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Restaurant Name</label>
+          <input
+            type="text"
+            placeholder="Enter restaurant name"
+            [(ngModel)]="editRestaurant.name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input
+            type="text"
+            placeholder="Enter address"
+            [(ngModel)]="editRestaurant.address"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rating</label>
+          <input
+            type="number"
+            placeholder="Enter rating"
+            [(ngModel)]="editRestaurant.rating"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+
+          <select [(ngModel)]="editRestaurant.isopen">
+            <option [ngValue]="true">Open</option>
+            <option [ngValue]="false">Closed</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px">
+        <button
+          class="btn-add"
+          (click)="updateRestaurant()"
+          style="flex: 1; padding: 13px"
+        >
+          💾 Save Changes
+        </button>
+        <button
+          style="
+            flex: 1;
+            padding: 13px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+          (click)="cancelEdit()"
+        >
+          ❌ Cancel
+        </button>
+      </div>
+    </div>
+
+    <div class="data-grid">
+      <div *ngFor="let r of restaurants" class="data-card">
+        <div class="data-card-header">
+          <div class="data-card-title">{{ r.name }}</div>
+          <div class="data-card-actions">
+            <button
+              class="btn-delete"
+              (click)="startEditRestaurant(r)"
+              style="background: #3498db; color: white; margin-right: 10px"
+            >
+              ✏️ Edit
+            </button>
+            <button class="btn-delete" (click)="deleteRestaurant(r.id)">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="data-row">
+          <span class="data-label">Address:</span>
+          <span class="data-value">{{ r.address }}</span>
+        </div>
+
+        <div class="data-row">
+          <span class="data-label">Rating:</span>
+          <span class="data-value">{{ r.rating }} ⭐</span>
+        </div>
+
+        <div class="data-row">
+          <span class="data-label">Status:</span>
+          <span
+            class="data-value"
+            [style.color]="r.isopen ? '#27ae60' : '#e74c3c'"
+          >
+            {{ r.isopen ? "✅ Open" : "❌ Closed" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="restaurants.length === 0" class="empty-state">
+      <p>No restaurants found</p>
+    </div>
+  </div>
+</div>

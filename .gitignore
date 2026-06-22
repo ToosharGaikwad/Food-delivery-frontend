@@ -1,0 +1,47 @@
+# Eclipse files
+.metadata/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build folders
+/target/
+/build/
+
+# IDE
+*.classpath
+*.project
+.settings/
+
+# Node (if any frontend)
+node_modules/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Angular cache
+.angular/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files (if they contain secrets)
+src/environments/environment*.ts
+
+# Coverage reports
+coverage/

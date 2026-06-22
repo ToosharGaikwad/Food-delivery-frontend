@@ -1,0 +1,38 @@
+<div class="container register-container">
+  <form (ngSubmit)="register()" class="card register-box">
+    <h2 class="text-center">Register</h2>
+
+    <input
+      class="input"
+      type="text"
+      [(ngModel)]="username"
+      name="name"
+      placeholder="Name"
+    />
+    <input
+      class="input"
+      type="email"
+      [(ngModel)]="email"
+      name="email"
+      placeholder="Email"
+    />
+    <input
+      class="input"
+      type="password"
+      [(ngModel)]="password"
+      name="password"
+      placeholder="Password"
+    />
+
+    <button class="btn" type="submit" [disabled]="loading">
+      {{ loading ? "Registering..." : "Register" }}
+    </button>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <p class="login-text">
+      Already have an account?
+      <a class="link" routerLink="/login">Login</a>
+    </p>
+  </form>
+</div>

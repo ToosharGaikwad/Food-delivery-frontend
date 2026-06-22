@@ -1,0 +1,163 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>🍕 FoodServe Delivery</h1>
+    <p>Select a restaurant and order your favorite food</p>
+    <button (click)="toggleUpdateForm()" class="profile-btn">
+      👤 Update Profile
+    </button>
+  </div>
+
+  <!-- Update User Form Modal -->
+  <div *ngIf="showUpdateForm" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Update Your Profile</h2>
+        <button (click)="cancelUpdate()" class="close-btn">✕</button>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="updateSuccess" class="success-message">
+        ✅ {{ updateSuccess }}
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="updateError" class="error-message">❌ {{ updateError }}</div>
+
+      <form
+        [formGroup]="updateForm"
+        (ngSubmit)="updateUser()"
+        class="update-form"
+      >
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            placeholder="Enter username"
+          />
+          <span
+            *ngIf="
+              updateForm.get('username')?.invalid &&
+              updateForm.get('username')?.touched
+            "
+            class="error-text"
+          >
+            Username is required
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Enter email"
+          />
+          <span
+            *ngIf="
+              updateForm.get('email')?.invalid &&
+              updateForm.get('email')?.touched
+            "
+            class="error-text"
+          >
+            Valid email is required
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Enter password"
+          />
+          <span
+            *ngIf="
+              updateForm.get('password')?.invalid &&
+              updateForm.get('password')?.touched
+            "
+            class="error-text"
+          >
+            Password is required
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Role:</label>
+          <select id="role" formControlName="role">
+            <option value="USER">User</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="submit"
+            [disabled]="!updateForm.valid || updateLoading"
+            class="submit-btn"
+          >
+            {{ updateLoading ? "⏳ Updating..." : "✅ Update Profile" }}
+          </button>
+          <button type="button" (click)="cancelUpdate()" class="cancel-btn">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50">
+    🏪 Popular Restaurants
+  </h2>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <p>⏳ Loading restaurants...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <p>❌ {{ error }}</p>
+    <button (click)="loadRestaurants()">🔄 Retry</button>
+  </div>
+
+  <!-- Restaurants Grid -->
+  <div *ngIf="!loading && !error">
+    <div *ngIf="restaurants.length === 0" class="no-data">
+      <p>📭 No restaurants available at the moment.</p>
+      <button (click)="loadRestaurants()">🔄 Refresh</button>
+    </div>
+    <div *ngIf="restaurants.length > 0" class="restaurants-grid">
+      <div *ngFor="let r of restaurants" class="restaurant-card">
+        <div class="restaurant-header">
+          <h3>{{ r.name }}</h3>
+        </div>
+
+        <div class="restaurant-info">
+          <p>
+            <strong>📍 Location:</strong>
+            {{ r.address }}
+          </p>
+          <p>
+            <strong>⭐ Rating:</strong>
+            <span class="rating">{{ r.rating }} / 5</span>
+          </p>
+          <p>
+            <strong>Status:</strong>
+            <span class="status" [ngClass]="r.isopen ? 'open' : 'closed'">
+              {{ r.isopen ? "✅ Open" : "❌ Closed" }}
+            </span>
+          </p>
+        </div>
+        <div class="restaurant-footer">
+          <button (click)="viewProducts(r.id)" class="view-products-btn">
+            View Products
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<div class="orders-container">
+  <!-- Header -->
+  <div class="orders-header">
+    <h2>📋 My Orders</h2>
+    <p>Track and manage all your food deliveries</p>
+  </div>
+
+  <!-- Orders List -->
+  <div class="orders-list">
+    <div *ngFor="let order of orders" class="order-card">
+      <!-- Order Header Info -->
+      <div class="order-header-section">
+        <div class="order-info">
+          <span class="order-info-label">Order ID</span>
+          <span class="order-info-value order-id">#{{ order.orderId }}</span>
+        </div>
+
+        <div class="order-info">
+          <span class="order-info-label">Total Amount</span>
+          <span class="order-info-value order-amount"
+            >₹{{ order.totalAmount }}</span
+          >
+        </div>
+
+        <div class="order-info">
+          <span class="order-info-label">Order Date</span>
+          <span class="order-info-value">
+            {{ order.orderDate | date: "dd MMM, HH:mm" }}
+          </span>
+        </div>
+
+        <div class="order-info">
+          <span class="order-info-label">Payment Mode</span>
+          <span class="order-info-value">{{ order.paymentMode }}</span>
+        </div>
+      </div>
+      <!-- Checkout Button -->
+      <div class="checkout-section">
+        <button class="place-order-btn" (click)="placeOrder()">
+          🛒 Place Order & Pay
+        </button>
+      </div>
+
+      <!-- Order Status -->
+      <div class="order-body">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <span
+            class="status-badge"
+            [ngClass]="'status-' + (order.orderStatus | lowercase)"
+          >
+            {{ order.orderStatus }}
+          </span>
+          <span style="color: #666; font-size: 0.9rem">
+            {{ order.paymentStatus || "Payment Pending" }}
+          </span>
+        </div>
+
+        <!-- Order Details Grid -->
+        <div class="order-details-grid">
+          <div class="order-detail-item" *ngIf="order.user?.id">
+            <span class="detail-label">User ID</span>
+            <span class="detail-value">{{ order.user.id }}</span>
+          </div>
+
+          <div class="order-detail-item" *ngIf="order.deliveryBoy?.id">
+            <span class="detail-label">Delivery Boy</span>
+            <span class="detail-value">Assigned</span>
+          </div>
+
+          <div class="order-detail-item">
+            <span class="detail-label">Items Count</span>
+            <span class="detail-value">{{ order.items?.length || 0 }}</span>
+          </div>
+
+          <div class="order-detail-item">
+            <span class="detail-label">Status</span>
+            <span class="detail-value">{{ order.orderStatus }}</span>
+          </div>
+        </div>
+
+        <!-- Order Items (if available) -->
+        <div *ngIf="order.items && order.items.length > 0" class="order-items">
+          <h4>Order Items:</h4>
+          <div class="order-items-list">
+            <div *ngFor="let item of order.items" class="order-item-row">
+              <span class="item-name">{{ item.product?.name || "Item" }}</span>
+              <span class="item-qty">x {{ item.quantity }}</span>
+              <span class="item-price">₹{{ item.price * item.quantity }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Update Section (for admins/delivery) -->
+        <div
+          *ngIf="order.orderStatus !== 'DELIVERED'"
+          class="status-update-section"
+        >
+          <label>Update Status:</label>
+          <select [(ngModel)]="order.orderStatus">
+            <option value="PENDING">PENDING</option>
+
+            <option value="PLACED">PLACED</option>
+
+            <option value="ACCEPTED">ACCEPTED</option>
+
+            <option value="PREPARING">PREPARING</option>
+
+            <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY</option>
+
+            <option value="DELIVERED">DELIVERED</option>
+
+            <option value="CANCELLED">CANCELLED</option>
+          </select>
+          <button
+            class="update-btn"
+            (click)="updateStatus(order.orderId, order.orderStatus)"
+          >
+            Update
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="orders.length === 0" class="empty-state">
+    <div class="empty-state-icon">📦</div>
+    <h3>No Orders Yet</h3>
+    <p>Start ordering your favorite food now!</p>
+  </div>
+</div>

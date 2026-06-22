@@ -1,0 +1,28 @@
+<div class="app-container">
+  <!-- Navigation Bar -->
+  <nav class="app-navbar">
+    <div class="navbar-content">
+      <div class="navbar-brand">
+        <span class="logo">🍕 FoodServe</span>
+      </div>
+      <div class="navbar-links">
+        <ng-container *ngIf="!authService.isLoggedIn()">
+          <a
+            routerLink="/login"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Login
+          </a>
+          <a routerLink="/register" routerLinkActive="active"> Register </a>
+        </ng-container>
+        <ng-container *ngIf="authService.isLoggedIn()">
+          <button class="logout-btn" (click)="logout()">Logout</button>
+        </ng-container>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <router-outlet></router-outlet>
+</div>
